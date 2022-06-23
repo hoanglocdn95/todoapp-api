@@ -1,26 +1,47 @@
 import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository, MongoRepository, ObjectID } from 'typeorm';
+import { ObjectId } from 'mongoose';
 import { CreateTodoInput } from './dto/create-todo.input';
 import { UpdateTodoInput } from './dto/update-todo.input';
+import { Todo } from './entities/todo.entity';
 
 @Injectable()
 export class TodosService {
-  create(createTodoInput: CreateTodoInput) {
-    return 'This action adds a new todo';
+  constructor(
+    @InjectRepository(Todo) private todosRepository: MongoRepository<Todo>,
+  ) {}
+
+  async create(createTodoInput: CreateTodoInput) {
+    const newTodo = await this.todosRepository.create(createTodoInput);
+    return this.todosRepository.save(newTodo);
   }
 
-  findAll() {
-    return `This action returns all todos`;
+  async findAll() {
+    const todoItems = await this.todosRepository.find();
+    return todoItems;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} todo`;
+  async findOne(id: ObjectID) {
+    return await this.todosRepository.findOneBy(id);
   }
 
-  update(id: number, updateTodoInput: UpdateTodoInput) {
-    return `This action updates a #${id} todo`;
+  async update(updateTodoInput: UpdateTodoInput) {
+    // return `This action updates a #${id} todo`;
+    const updateItem = {
+      title: updateTodoInput.title,
+      status: updateTodoInput.status,
+      description: updateTodoInput.description,
+      creatorId: updateTodoInput.creatorId,
+      createdAt: updateTodoInput.createdAt,
+    };
+    return await this.todosRepository.update(updateTodoInput._id, updateItem);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} todo`;
+  remove(id: ObjectID) {
+    this.todosRepository.delete(id);
+    return {
+      status: 'Đã bay màu',
+    };
   }
 }
