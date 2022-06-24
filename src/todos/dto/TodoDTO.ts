@@ -1,8 +1,18 @@
-import { InputType, Int, Field, GraphQLISODateTime } from '@nestjs/graphql';
+import {
+  Int,
+  Field,
+  GraphQLISODateTime,
+  ID,
+  ObjectType,
+} from '@nestjs/graphql';
 import { IsAlpha, IsInt, IsDate } from 'class-validator';
+import { ObjectID } from 'typeorm';
 
-@InputType()
-export class CreateTodoInput {
+@ObjectType()
+export class TodoDTO {
+  @Field((type) => ID)
+  _id: ObjectID;
+
   @Field()
   title: string;
 

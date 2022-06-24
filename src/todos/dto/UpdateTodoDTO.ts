@@ -1,4 +1,4 @@
-import { CreateTodoInput } from './create-todo.input';
+import { CreateTodoDTO } from './CreateTodoDTO';
 import {
   InputType,
   Field,
@@ -11,7 +11,7 @@ import { IsAlpha, IsInt, IsDate } from 'class-validator';
 import { ObjectID } from 'typeorm';
 
 @InputType()
-export class UpdateTodoInput extends PartialType(CreateTodoInput) {
+export class UpdateTodoDTO extends PartialType(CreateTodoDTO) {
   @Field((type) => ID)
   _id: ObjectID;
 
