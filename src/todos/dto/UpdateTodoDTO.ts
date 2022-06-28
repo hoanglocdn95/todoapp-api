@@ -8,12 +8,11 @@ import {
   ID,
 } from '@nestjs/graphql';
 import { IsAlpha, IsInt, IsDate } from 'class-validator';
-import { ObjectID } from 'typeorm';
 
 @InputType()
 export class UpdateTodoDTO extends PartialType(CreateTodoDTO) {
   @Field((type) => ID)
-  _id: ObjectID;
+  id: number;
 
   @Field()
   title: string;

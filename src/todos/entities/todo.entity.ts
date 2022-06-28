@@ -1,9 +1,14 @@
-import { Column, Entity, ObjectID, ObjectIdColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  PrimaryGeneratedColumn,
+  DeleteDateColumn,
+} from 'typeorm';
 
-@Entity()
-export class Todo {
-  @ObjectIdColumn()
-  _id: ObjectID;
+@Entity({ name: 'todoEntity' })
+export class TodoEntity {
+  @PrimaryGeneratedColumn()
+  id: number;
 
   @Column()
   title: string;
@@ -19,4 +24,7 @@ export class Todo {
 
   @Column()
   createdAt: Date;
+
+  @DeleteDateColumn()
+  deletedAt?: Date;
 }

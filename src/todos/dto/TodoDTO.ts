@@ -6,12 +6,11 @@ import {
   ObjectType,
 } from '@nestjs/graphql';
 import { IsAlpha, IsInt, IsDate } from 'class-validator';
-import { ObjectID } from 'typeorm';
 
 @ObjectType()
 export class TodoDTO {
   @Field((type) => ID)
-  _id: ObjectID;
+  id: number;
 
   @Field()
   title: string;

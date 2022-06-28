@@ -1,28 +1,32 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, MongoRepository, ObjectID } from 'typeorm';
-import { ObjectId } from 'mongoose';
+import { TypeOrmQueryService } from '@nestjs-query/query-typeorm';
+import { Repository } from 'typeorm';
+
 import { CreateTodoDTO } from './dto/CreateTodoDTO';
 import { UpdateTodoDTO } from './dto/UpdateTodoDTO';
-import { Todo } from './entities/todo.entity';
+import { TodoEntity } from './entities/todo.entity';
 
 @Injectable()
-export class TodosService {
+export class TodosService extends TypeOrmQueryService<TodoEntity> {
   constructor(
-    @InjectRepository(Todo) private todosRepository: MongoRepository<Todo>,
-  ) {}
+    @InjectRepository(TodoEntity)
+    private todosRepository: Repository<TodoEntity>,
+  ) {
+    super(todosRepository, { useSoftDelete: true });
+  }
 
   async create(createTodoInput: CreateTodoDTO) {
     return await this.todosRepository.save(createTodoInput);
   }
 
-  async findAll() {
+  async findAll(): Promise<TodoEntity[]> {
     const todoItems = await this.todosRepository.find();
     return todoItems;
   }
 
-  async findOne(id: ObjectID) {
-    return await this.todosRepository.findOneBy(id);
+  async findOne(id: number) {
+    return await this.todosRepository.findOneBy({ id: id });
   }
 
   async update(updateTodoInput: UpdateTodoDTO): Promise<UpdateTodoDTO> {
@@ -33,12 +37,12 @@ export class TodosService {
       creatorId: updateTodoInput.creatorId,
       createdAt: updateTodoInput.createdAt,
     };
-    this.todosRepository.update(updateTodoInput._id, updateItem);
+    this.todosRepository.update(updateTodoInput.id, updateItem);
     return;
   }
 
-  remove(id: ObjectID) {
-    this.todosRepository.delete(id);
+  softRemove(id: number) {
+    this.todosRepository.softRemove({ id: id });
     return {
       status: 'Đã bay màu',
     };

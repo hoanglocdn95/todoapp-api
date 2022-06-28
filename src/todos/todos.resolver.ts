@@ -1,5 +1,9 @@
 import { Resolver, Query, Mutation, Args, ID } from '@nestjs/graphql';
-import { ObjectID } from 'typeorm';
+import { UpdateManyResponse, Filter } from '@nestjs-query/core';
+import {
+  FilterType,
+  UpdateManyResponseType,
+} from '@nestjs-query/query-graphql';
 
 import { TodosService } from './todos.service';
 import { CreateTodoDTO } from './dto/CreateTodoDTO';
@@ -21,18 +25,32 @@ export class TodosResolver {
   }
 
   @Query(() => TodoDTO, { name: 'todo' })
-  findOne(@Args('id', { type: () => ID }) _id: ObjectID) {
-    return this.todosService.findOne(_id);
+  findOne(@Args('id', { type: () => ID }) id: number) {
+    return this.todosService.findOne(id);
   }
 
   @Mutation(() => TodoDTO)
   updateTodo(@Args('updateTodoInput') updateTodoInput: UpdateTodoDTO) {
     this.todosService.update(updateTodoInput);
-    return this.todosService.findOne(updateTodoInput._id);
+    return this.todosService.findOne(updateTodoInput.id);
   }
 
   @Mutation(() => TodoDTO)
-  removeTodo(@Args('id', { type: () => ID }) _id: ObjectID) {
-    return this.todosService.remove(_id);
+  removeTodo(@Args('id', { type: () => ID }) id: number) {
+    return this.todosService.softRemove(id);
+  }
+
+  @Mutation(() => TodoDTO)
+  restoreOneTodoItem(
+    @Args('input', { type: () => ID }) id: number,
+  ): Promise<TodoDTO> {
+    return this.todosService.restoreOne(id);
+  }
+
+  @Mutation(() => UpdateManyResponseType())
+  restoreManyTodoItems(
+    @Args('input', { type: () => FilterType(TodoDTO) }) filter: Filter<TodoDTO>,
+  ): Promise<UpdateManyResponse> {
+    return this.todosService.restoreMany(filter);
   }
 }

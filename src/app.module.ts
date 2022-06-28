@@ -4,6 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Module } from '@nestjs/common';
 import { join } from 'path';
 
+import connectionOptions from '../ormconfig';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TodosModule } from './todos/todos.module';
@@ -14,14 +15,7 @@ import { TodosModule } from './todos/todos.module';
       driver: ApolloDriver,
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
     }),
-    TypeOrmModule.forRoot({
-      type: 'mongodb',
-      url: 'mongodb+srv://hoanglodcn95:Cun123cun@nest-graphql-demo.7je8i.mongodb.net/?retryWrites=true&w=majority',
-      entities: [join(__dirname, '**/**.entity{.ts,.js}')],
-      synchronize: true,
-      useNewUrlParser: true,
-      logging: true,
-    }),
+    TypeOrmModule.forRoot(connectionOptions),
     TodosModule,
   ],
   controllers: [AppController],
