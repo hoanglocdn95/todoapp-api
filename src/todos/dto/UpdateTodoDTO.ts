@@ -1,4 +1,3 @@
-import { CreateTodoDTO } from './CreateTodoDTO';
 import {
   InputType,
   Field,
@@ -9,9 +8,12 @@ import {
 } from '@nestjs/graphql';
 import { IsAlpha, IsInt, IsDate } from 'class-validator';
 
+import { CreateTodoDTO } from './CreateTodoDTO';
+import { StatusEnumType } from '../types';
+
 @InputType()
 export class UpdateTodoDTO extends PartialType(CreateTodoDTO) {
-  @Field((type) => ID)
+  @Field(() => ID)
   id: number;
 
   @Field()
@@ -22,13 +24,13 @@ export class UpdateTodoDTO extends PartialType(CreateTodoDTO) {
 
   @IsAlpha()
   @Field({ nullable: true })
-  status: string;
+  status: StatusEnumType;
 
   @IsInt()
-  @Field((type) => Int, { nullable: true })
+  @Field(() => Int, { nullable: true })
   creatorId: number;
 
   @IsDate()
-  @Field((type) => GraphQLISODateTime, { nullable: true })
+  @Field(() => GraphQLISODateTime, { nullable: true })
   createdAt: Date;
 }

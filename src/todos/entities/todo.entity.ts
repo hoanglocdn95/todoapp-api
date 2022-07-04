@@ -5,6 +5,8 @@ import {
   DeleteDateColumn,
 } from 'typeorm';
 
+import { StatusEnumType } from '../types';
+
 @Entity({ name: 'todoEntity' })
 export class TodoEntity {
   @PrimaryGeneratedColumn()
@@ -16,8 +18,8 @@ export class TodoEntity {
   @Column({ nullable: true })
   description?: string;
 
-  @Column()
-  status: string;
+  @Column({ default: StatusEnumType.New })
+  status: StatusEnumType;
 
   @Column()
   creatorId: number;

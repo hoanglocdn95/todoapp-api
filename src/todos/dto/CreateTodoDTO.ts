@@ -1,6 +1,8 @@
 import { InputType, Int, Field, GraphQLISODateTime } from '@nestjs/graphql';
 import { IsAlpha, IsInt, IsDate } from 'class-validator';
 
+import { StatusEnumType } from '../types';
+
 @InputType()
 export class CreateTodoDTO {
   @Field()
@@ -11,13 +13,13 @@ export class CreateTodoDTO {
 
   @IsAlpha()
   @Field()
-  status: string;
+  status: StatusEnumType;
 
   @IsInt()
-  @Field((type) => Int)
+  @Field(() => Int)
   creatorId: number;
 
   @IsDate()
-  @Field((type) => GraphQLISODateTime)
+  @Field(() => GraphQLISODateTime)
   createdAt: Date;
 }
