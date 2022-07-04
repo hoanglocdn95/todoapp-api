@@ -1,26 +1,50 @@
 import { Injectable } from '@nestjs/common';
-import { CreateTodoInput } from './dto/create-todo.input';
-import { UpdateTodoInput } from './dto/update-todo.input';
+import { InjectRepository } from '@nestjs/typeorm';
+import { TypeOrmQueryService } from '@nestjs-query/query-typeorm';
+import { Repository } from 'typeorm';
+
+import { CreateTodoDTO } from './dto/CreateTodoDTO';
+import { UpdateTodoDTO } from './dto/UpdateTodoDTO';
+import { TodoEntity } from './entities/todo.entity';
 
 @Injectable()
-export class TodosService {
-  create(createTodoInput: CreateTodoInput) {
-    return 'This action adds a new todo';
+export class TodosService extends TypeOrmQueryService<TodoEntity> {
+  constructor(
+    @InjectRepository(TodoEntity)
+    private todosRepository: Repository<TodoEntity>,
+  ) {
+    super(todosRepository, { useSoftDelete: true });
   }
 
-  findAll() {
-    return `This action returns all todos`;
+  async create(createTodoInput: CreateTodoDTO) {
+    return await this.todosRepository.save(createTodoInput);
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} todo`;
+  async findAll(): Promise<TodoEntity[]> {
+    const todoItems = await this.todosRepository.find();
+    return todoItems;
   }
 
-  update(id: number, updateTodoInput: UpdateTodoInput) {
-    return `This action updates a #${id} todo`;
+  async findOne(id: number) {
+    return await this.todosRepository.findOneBy({ id: id });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} todo`;
+  async update(updateTodoInput: UpdateTodoDTO): Promise<UpdateTodoDTO> {
+    const updateItem = {
+      title: updateTodoInput.title,
+      status: updateTodoInput.status,
+      description: updateTodoInput.description,
+      creatorId: updateTodoInput.creatorId,
+      createdAt: updateTodoInput.createdAt,
+    };
+    this.todosRepository.update(updateTodoInput.id, updateItem);
+    return;
+  }
+
+  softRemove(id: number) {
+    this.todosRepository.softRemove({ id: id });
+    return {
+      status: 'Đã bay màu',
+    };
   }
 }
