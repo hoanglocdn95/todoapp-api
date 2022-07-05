@@ -42,15 +42,15 @@ export class TodosResolver {
 
   @Mutation(() => TodoDTO)
   restoreOneTodoItem(
-    @Args('input', { type: () => ID }) id: number,
+    @Args('id', { type: () => ID }) id: number,
   ): Promise<TodoDTO> {
     return this.todosService.restoreOne(id);
   }
 
-  @Mutation(() => UpdateManyResponseType())
-  restoreManyTodoItems(
-    @Args('input', { type: () => FilterType(TodoDTO) }) filter: Filter<TodoDTO>,
-  ): Promise<UpdateManyResponse> {
-    return this.todosService.restoreMany(filter);
-  }
+  // @Mutation(() => UpdateManyResponseType())
+  // restoreManyTodoItems(
+  //   @Args('id', { type: () => FilterType(TodoDTO) }) filter: Filter<TodoDTO>,
+  // ): Promise<UpdateManyResponse> {
+  //   return this.todosService.restoreMany(filter);
+  // }
 }
