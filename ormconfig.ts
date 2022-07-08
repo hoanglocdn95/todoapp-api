@@ -1,5 +1,5 @@
 import { DataSourceOptions } from 'typeorm';
-import { join } from 'path';
+// import { join } from 'path';
 import { config as configEnv } from 'dotenv';
 
 configEnv();
@@ -15,9 +15,11 @@ const config = {
 const connectionOptions: DataSourceOptions = {
   ...config,
   type: 'postgres',
-  synchronize: true,
   dropSchema: false,
   entities: ['dist/**/*.entity{.ts,.js}'],
+  migrationsRun: true,
+  migrations: ['src/migrations/**/*{.ts,.js}'],
+  migrationsTableName: 'migrations',
 };
 
 export default connectionOptions;

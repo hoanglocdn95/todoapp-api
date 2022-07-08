@@ -52,16 +52,13 @@ export class TodosService extends TypeOrmQueryService<TodoEntity> {
 
   async restoreTodo(id: number) {
     const item = await this.todosRepository.restore(id);
-    console.log('item', item);
     return {
       status: `Restored todo ${id}`,
     };
   }
 
   async restoreManyTodo(filter: Filter<TodoDTO>) {
-    console.log('filter', filter);
     // const item = await this.todosRepository.restore(id);
-    // console.log('item', item);
     // return {
     //   status: `Restored todo ${id}`,
     // };
