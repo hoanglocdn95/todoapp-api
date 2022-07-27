@@ -1,10 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { TypeOrmQueryService } from '@nestjs-query/query-typeorm';
+import { Filter } from '@nestjs-query/core';
 import { Repository } from 'typeorm';
 
 import { CreateTodoDTO } from './dto/CreateTodoDTO';
 import { UpdateTodoDTO } from './dto/UpdateTodoDTO';
+import { TodoDTO } from './dto/TodoDTO';
 import { TodoEntity } from './entities/todo.entity';
 
 @Injectable()
@@ -44,7 +46,30 @@ export class TodosService extends TypeOrmQueryService<TodoEntity> {
   softRemove(id: number) {
     this.todosRepository.softRemove({ id: id });
     return {
-      status: 'Đã bay màu',
+      status: `Todo ${id} deleted`,
+    };
+  }
+
+  async restoreTodo(id: number) {
+    const todoItem = await this.todosRepository.findOneBy({ id: id });
+    if (todoItem) {
+      await this.todosRepository.restore(id);
+      return {
+        status: `Restored item with id ${id}`,
+      };
+    }
+    return {
+      status: `Cannot restore item with id: ${id}`,
+    };
+  }
+
+  async restoreManyTodo(filter: Filter<TodoDTO>) {
+    // const item = await this.todosRepository.restore(id);
+    // return {
+    //   status: `Restored todo ${id}`,
+    // };
+    return {
+      status: 'restoreManyTodo',
     };
   }
 }
