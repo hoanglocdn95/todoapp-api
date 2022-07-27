@@ -51,9 +51,15 @@ export class TodosService extends TypeOrmQueryService<TodoEntity> {
   }
 
   async restoreTodo(id: number) {
-    const item = await this.todosRepository.restore(id);
+    const todoItem = await this.todosRepository.findOneBy({ id: id });
+    if (todoItem) {
+      await this.todosRepository.restore(id);
+      return {
+        status: `Restored item with id ${id}`,
+      };
+    }
     return {
-      status: `Restored todo ${id}`,
+      status: `Cannot restore item with id: ${id}`,
     };
   }
 
